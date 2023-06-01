@@ -1,0 +1,13 @@
+source leaprc.gaff  #general amber force field, conte parametres del zinc
+source leaprc.protein.ff14SB
+source leaprc.water.tip3p #tipus especial de molecules d'aigua
+c = loadpdb G278S_protonated1FH.pdb
+savepdb c G278S_vac.pdb
+saveamberparm c  G278S_vac.prmtop  G278S_vac.inpcrd #mateixo info que vac pero amb les coordenades
+addions c CL 0.0
+addions c NA 0.0
+solvatebox c TIP3PBOX 12.0   #crea la caixa d'aigua que serà neutre.
+savepdb c  G278S_wat.pdb
+saveamberparm c  G278S_wat.prmtop  G278S_wat_init0.rst
+quit
+
