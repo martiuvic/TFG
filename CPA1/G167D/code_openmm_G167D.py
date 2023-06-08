@@ -80,7 +80,7 @@ sim = Simulation(prmtop.topology,
 sim.context.getState(getPositions=True, enforcePeriodicBox=True).getPositions()
 
 # Filename to save the state data into.
-sim.reporters.append(StateDataReporter("G167D_output.log",
+sim.reporters.append(StateDataReporter("/home/marti/results/G167D_output.log",
     1000,   # number of steps between each save.
     step = True,             # writes the step number to each line
     time = True,             # writes the time (in ps)
@@ -92,13 +92,13 @@ sim.reporters.append(StateDataReporter("G167D_output.log",
     density = True))         # writes the density (in g/mL)
 
 # Updates the checkpoint file every 10,000 steps
-sim.reporters.append(CheckpointReporter('G167D_chk_out.rst',20000))
+sim.reporters.append(CheckpointReporter('/home/marti/results/G167D_chk_out.rst',20000))
 
 # Adds another frame to the CHARMM-formatted DCD (which can be easily
 # converted to .mdcrd by cpptraj) every 10,000 timesteps.
 # Its good practice to keep the trajectory and checkpoint on the same
 # write frequency, in case you need to stop a job and resume it later.
-sim.reporters.append(DCDReporter("G167D.dcd",20000))
+sim.reporters.append(DCDReporter("/home/marti/results/G167D.dcd",20000))
 
 # Running the Molecular Dynamics Simulation
 # We have now set up the entire system for running molecular dynamics!

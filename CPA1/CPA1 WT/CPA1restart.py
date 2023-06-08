@@ -79,7 +79,7 @@ sim = Simulation(prmtop.topology,
 sim.context.setPositions(inpcrd.getPositions(asNumpy=True))
 #Next, add this section immediately before declaring the checkpoint file to use going forward.
 
-with open("p/home/marti/results/CPA1_chk_out.rst",'rb') as f:
+with open("/home/marti/results/CPA1_chk_out.rst",'rb') as f:
     sim.context.loadCheckpoint(f.read())
 
 # Establishes the periodic boundary conditions of the system

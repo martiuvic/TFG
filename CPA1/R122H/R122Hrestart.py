@@ -79,7 +79,7 @@ sim = Simulation(prmtop.topology,
 sim.context.setPositions(inpcrd.getPositions(asNumpy=True))
 #Next, add this section immediately before declaring the checkpoint file to use going forward.
 
-with open("R122H_chk_out.rst",'rb') as f:
+with open("/home/marti/results/R122H_chk_out.rst",'rb') as f:
     sim.context.loadCheckpoint(f.read())
 
 # Establishes the periodic boundary conditions of the system
@@ -87,7 +87,7 @@ with open("R122H_chk_out.rst",'rb') as f:
 sim.context.getState(getPositions=True, enforcePeriodicBox=True).getPositions()
 
 # Filename to save the state data into.
-datafile=open("R122H_output.log","a")
+datafile=open("/home/marti/results/R122H_output.log","a")
 sim.reporters.append(StateDataReporter(datafile,
     1000,   # number of steps between each save.
     step = True,             # writes the step number to each line
@@ -100,13 +100,13 @@ sim.reporters.append(StateDataReporter(datafile,
     density = True))         # writes the density (in g/mL)
 
 # Updates the checkpoint file every 10,000 steps
-sim.reporters.append(CheckpointReporter('R122H_chk_out.rst',20000))
+sim.reporters.append(CheckpointReporter('/home/marti/results/R122H_chk_out.rst',20000))
 
 # Adds another frame to the CHARMM-formatted DCD (which can be easily
 # converted to .mdcrd by cpptraj) every 10,000 timesteps.
 # Its good practice to keep the trajectory and checkpoint on the same
 # write frequency, in case you need to stop a job and resume it later.
-sim.reporters.append(DCDReporter("R122H.dcd",
+sim.reporters.append(DCDReporter("/home/marti/results/R122H.dcd",
     20000,
     append=True))
 
