@@ -25,6 +25,7 @@ system = prmtop.createSystem(nonbondedMethod = app.PME,
     # maintains the center ochkf the periodic box at the center of mass
     removeCMMotion = True)
 
+#you will also want to set up your thermostat to run in NVT (and add a barostat to run in NPT).
 # Temperature, Friction Coefficient, Timestep
 # This will be added to the larger simulation
 thermostat = LangevinIntegrator(300*kelvin, 1/picoseconds, 0.001*picoseconds)
@@ -75,12 +76,19 @@ sim = Simulation(prmtop.topology,
 # Gets the starting position for every atom in the system and
 # initializes the simulation
 
+sim.context.setPositions(inpcrd.getPositions(asNumpy=True))
+#Next, add this section immediately before declaring the checkpoint file to use going forward.
+
+with open("/home/marti/results/G278S_chk_out.rst",'rb') as f:
+    sim.context.loadCheckpoint(f.read())
+
 # Establishes the periodic boundary conditions of the system
 # based on the box size.
 sim.context.getState(getPositions=True, enforcePeriodicBox=True).getPositions()
 
 # Filename to save the state data into.
-sim.reporters.append(StateDataReporter("/home/marti/results/G278S_output.log",
+datafile=open("/home/marti/results/G278S_output.log","a")
+sim.reporters.append(StateDataReporter(datafile,
     1000,   # number of steps between each save.
     step = True,             # writes the step number to each line
     time = True,             # writes the time (in ps)
@@ -98,21 +106,22 @@ sim.reporters.append(CheckpointReporter('/home/marti/results/G278S_chk_out.rst',
 # converted to .mdcrd by cpptraj) every 10,000 timesteps.
 # Its good practice to keep the trajectory and checkpoint on the same
 # write frequency, in case you need to stop a job and resume it later.
-sim.reporters.append(DCDReporter("/home/marti/results/G278S.dcd",20000))
+sim.reporters.append(DCDReporter("/home/marti/results/G278S.dcd",
+    20000,
+    append=True))
 
 # Running the Molecular Dynamics Simulation
 # We have now set up the entire system for running molecular dynamics!
 # But first, as is good practice, we want to minimize the system first to clear any potential clashes between atoms and residues.
 # Minimize the system
-sim.context.setPositions(inpcrd.getPositions(asNumpy=True))
-sim.minimizeEnergy(maxIterations=2000)
+#sim.minimizeEnergy(maxIterations=200)
 
 #You can set the maxIterations to whatever value you want, but be careful not to minimize for too long,
 # as you can wind up starting from a structure that may be very different from your original files.
 #From here, you can begin the actual MD portion.
 
 # This instructs the program to take 1,000,000 timesteps, which corresponds
-# to 1.0 ns of MD based on a 2fs timestep.
+# to 1.0 μs of MD based on a 2fs timestep.
 sim.step(10000000)
 
 #Restarting a Simulation from a Checkpoint
